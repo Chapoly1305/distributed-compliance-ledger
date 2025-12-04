@@ -29,6 +29,7 @@ var (
 	ErrModelDeletionCertified             = errors.Register(ModuleName, 525, "model has a model version that has a compliance record and  correcponding model can not be deleted")
 	ErrFieldIsNotBase64Encoded            = errors.Register(ModuleName, 526, "Field is not base64 encoded string")
 	ErrEnhancedSetupFlowTCRevisionInvalid = errors.Register(ModuleName, 527, "enhanced setup flow TC revision invalid")
+	ErrOtaChecksumTypeInvalid             = errors.Register(ModuleName, 528, "OTA checksum type is not valid")
 )
 
 func NewErrModelAlreadyExists(vid interface{}, pid interface{}) error {
@@ -148,4 +149,10 @@ func NewErrEnhancedSetupFlowTCDigestIsNotBase64Encoded(enhancedSetupFlowTCDigest
 func NewErrEnhancedSetupFlowTCRevisionInvalidIncrement(newEnhancedSetupFlowTCRevision int32, prevEnhancedSetupFlowTCRevision int32) error {
 	return errors.Wrapf(ErrEnhancedSetupFlowTCRevisionInvalid,
 		"EnhancedSetupFlowTCRevision %v is not correctly incremented to %v", prevEnhancedSetupFlowTCRevision, newEnhancedSetupFlowTCRevision)
+}
+
+func NewErrOtaChecksumTypeInvalid(otaChecksumType int32) error {
+	return errors.Wrapf(ErrOtaChecksumTypeInvalid,
+		"OtaChecksumType %v is not valid. Must be one of [1, 7, 8, 10, 11, 12] per IANA Named Information Hash Algorithm Registry",
+		otaChecksumType)
 }

@@ -208,25 +208,67 @@ func TestMsgCreateModelVersion_ValidateBasic(t *testing.T) {
 
 				return msg
 			}(validMsgCreateModelVersion()),
-			err: validator.ErrRequiredFieldMissing,
+			err: ErrOtaChecksumTypeInvalid,
 		},
 		{
-			name: "OtaChecksumType < 0",
+			name: "OtaChecksumType < 0 when OtaUrl is set",
 			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
 				msg.OtaChecksumType = -1
 
 				return msg
 			}(validMsgCreateModelVersion()),
-			err: validator.ErrFieldLowerBoundViolated,
+			err: ErrOtaChecksumTypeInvalid,
 		},
 		{
-			name: "OtaChecksumType > 65535",
+			name: "OtaChecksumType > 65535 when OtaUrl is set",
 			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
 				msg.OtaChecksumType = 65536
 
 				return msg
 			}(validMsgCreateModelVersion()),
-			err: validator.ErrFieldUpperBoundViolated,
+			err: ErrOtaChecksumTypeInvalid,
+		},
+		{
+			name: "OtaChecksumType == 2 is not in allowed list when OtaUrl is set",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 2
+
+				return msg
+			}(validMsgCreateModelVersion()),
+			err: ErrOtaChecksumTypeInvalid,
+		},
+		{
+			name: "OtaChecksumType == 3 is not in allowed list when OtaUrl is set",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 3
+
+				return msg
+			}(validMsgCreateModelVersion()),
+			err: ErrOtaChecksumTypeInvalid,
+		},
+		{
+			name: "OtaChecksumType == 9 is not in allowed list when OtaUrl is set",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 9
+
+				return msg
+			}(validMsgCreateModelVersion()),
+			err: ErrOtaChecksumTypeInvalid,
+		},
+		{
+			name: "OtaChecksumType == 100 is not in allowed list when OtaUrl is set",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 100
+
+				return msg
+			}(validMsgCreateModelVersion()),
+			err: ErrOtaChecksumTypeInvalid,
 		},
 		{
 			name: "MinApplicableSoftwareVersion > MaxApplicableSoftwareVersion " +
@@ -488,17 +530,55 @@ func TestMsgCreateModelVersion_ValidateBasic(t *testing.T) {
 			}(validMsgCreateModelVersion()),
 		},
 		{
-			name: "OtaChecksumType == 1",
+			name: "OtaChecksumType == 1 (sha-256)",
 			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
 				msg.OtaChecksumType = 1
 
 				return msg
 			}(validMsgCreateModelVersion()),
 		},
 		{
-			name: "OtaChecksumType == 65535",
+			name: "OtaChecksumType == 7 (sha-384)",
 			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
-				msg.OtaChecksumType = 65535
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 7
+
+				return msg
+			}(validMsgCreateModelVersion()),
+		},
+		{
+			name: "OtaChecksumType == 8 (sha-512)",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 8
+
+				return msg
+			}(validMsgCreateModelVersion()),
+		},
+		{
+			name: "OtaChecksumType == 10 (sha3-256)",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 10
+
+				return msg
+			}(validMsgCreateModelVersion()),
+		},
+		{
+			name: "OtaChecksumType == 11 (sha3-384)",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 11
+
+				return msg
+			}(validMsgCreateModelVersion()),
+		},
+		{
+			name: "OtaChecksumType == 12 (sha3-512)",
+			msg: func(msg *MsgCreateModelVersion) *MsgCreateModelVersion {
+				msg.OtaUrl = "https://sampleflowurl.dclmodel"
+				msg.OtaChecksumType = 12
 
 				return msg
 			}(validMsgCreateModelVersion()),

@@ -80,6 +80,19 @@ func (msg *MsgCreateModelVersion) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 
+var ValidOtaChecksumTypes = map[int32]bool{
+	1:  true, // sha-256
+	7:  true, // sha-384
+	8:  true, // sha-512
+	10: true, // sha3-256
+	11: true, // sha3-384
+	12: true, // sha3-512
+}
+
+func IsValidOtaChecksumType(checksumType int32) bool {
+	return ValidOtaChecksumTypes[checksumType]
+}
+
 func (msg *MsgCreateModelVersion) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
@@ -89,6 +102,10 @@ func (msg *MsgCreateModelVersion) ValidateBasic() error {
 	_, err = base64.StdEncoding.DecodeString(msg.OtaChecksum)
 	if err != nil {
 		return NewErrOtaChecksumIsNotBase64Encoded(msg.OtaChecksum)
+	}
+
+	if msg.OtaUrl != "" && !IsValidOtaChecksumType(msg.OtaChecksumType) {
+		return NewErrOtaChecksumTypeInvalid(msg.OtaChecksumType)
 	}
 
 	err = validator.Validate(msg)
